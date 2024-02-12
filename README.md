@@ -1,12 +1,16 @@
-ApiPalestrantes - Criando REST APIs com ASP.NET Core
-Está sendo desenvolvido um projeto de eventos com palestrantes, utilizando ASP.NET Core 7.
+# ApiEventos/Palestrantes- Criando REST APIs com ASP.NET Core
 
-Tecnologias e ferramentas utilizadas
-Visual Studio 2022
-ASP.NET Core 7
-EF Core
-Swagger
-AutoMapper
-Funcionalidades
-Cadastro, Listagem, Detalhes, Atualização, e Remoção de Evento
-Cadastro de palestrantes
+Está sendo desenvolvido um projeto de eventos com gerenciamento de palestrantes, utilizando ASP.NET Core 7.
+
+## Tecnologias e ferramentas utilizadas
+- Visual Studio 2022
+- ASP.NET Core 7
+- EF Core
+- Swagger
+- AutoMapper
+
+
+## Funcionalidades
+- Cadastro, Listagem, Detalhes, Atualização, e Remoção de Evento
+- Cadastro de palestrantes
+
