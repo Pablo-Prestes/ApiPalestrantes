@@ -1,13 +1,20 @@
 using DevEvents.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<DevEventsDbContext>();
-
+//builder.Services.AddSingleton<DevEventsDbContext>();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Conexão com o banco de dados
+var connectionStringMysql = builder.Configuration.GetConnectionString("DevEventsCs");
+builder.Services.AddDbContext<DevEventsDbContext>(options => options.UseMySql(connectionStringMysql, ServerVersion.Parse("8.0-mysql")));
+
+//Usando em mémoria
+//builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEvents"));
+//Conexão com o banco de dados MySql
 
 var app = builder.Build();
 

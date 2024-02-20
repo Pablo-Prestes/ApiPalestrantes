@@ -2,6 +2,7 @@
 using DevEvents.API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevEvents.API.Controllers
 {
@@ -16,7 +17,7 @@ namespace DevEvents.API.Controllers
             _context = context;
         }
 
-        //api/dev-events GET
+        //GET: api/dev-events 
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -24,11 +25,13 @@ namespace DevEvents.API.Controllers
             return Ok(devEvent);
         }
 
-        //api/dev-events/123412 GET
+        //GET Id: api/dev-events/123412 
         [HttpGet("{id}")]
         public IActionResult GetById(Guid id)
         {
-            var devEvent = _context.DevEvents.SingleOrDefault(x => x.Id == id);
+            var devEvent = _context.DevEvents
+                .Include(de => de.Palestrantes)
+                .SingleOrDefault(x => x.Id == id);
             if (devEvent == null) 
             {
                 return NotFound();
@@ -36,14 +39,15 @@ namespace DevEvents.API.Controllers
             return Ok(devEvent);
         }
 
-        //api/dev-events/ POST  
+        //POST: api/dev-events/ 
         [HttpPost]
         public IActionResult PostDevEvent(DevEvent devEvent)
         {
             _context.DevEvents.Add(devEvent);
+            _context.SaveChanges();
             return CreatedAtAction(nameof(GetById), new { id = devEvent.Id }, devEvent);
         }
-        //api/dev-events/2722b2a6-27d7-43c9-8ecc-3d9509e4656e PUT
+        //PUT: api/dev-events/Id
         [HttpPut("{id}")]
         public IActionResult UpdateDevEvent(Guid id, DevEvent input)
         {
@@ -53,9 +57,12 @@ namespace DevEvents.API.Controllers
                 return NotFound();
             }
             devEvent.Update(input.Titulo, input.Descricao, input.DataInicio, input.DataFim);
+
+            _context.DevEvents.Update(devEvent);
+            _context.SaveChanges();
             return NoContent();
         }
-        //api/dev-events/2722b2a6-27d7-43c9-8ecc-3d9509e4656e DELETE
+        //DELETE: api/dev-events/Id 
         [HttpDelete("{id}")]
         public IActionResult DeleteDevEvent(Guid id)
         {
@@ -64,20 +71,27 @@ namespace DevEvents.API.Controllers
             {
                 return NotFound();
             }
-            devEvent.Delete();
+             devEvent.Delete();
+            _context.SaveChanges();
             return NoContent();
         }
-
+        
+        //POST: Palestrante api/DevEventsPalestrantes/
         [HttpPost("{id}/palestrantes")]
         public IActionResult PostPalestrante(Guid id, DevEventsPalestrantes palestrante) 
         {
-            var devEvent = _context.DevEvents.SingleOrDefault(x => x.Id == id);
-            if (devEvent == null)
+
+            palestrante.DevEventsId = id;
+
+            var devEvent = _context.DevEvents.Any(x => x.Id == id);
+
+            if (!devEvent)
             {
                 return NotFound();
             }
 
-            devEvent.Palestrantes.Add(palestrante);
+            _context.DevEventsPalestrantes.Add(palestrante);
+            _context.SaveChanges();
             return NoContent();
         }
 
