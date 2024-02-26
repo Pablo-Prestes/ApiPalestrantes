@@ -40,6 +40,30 @@ namespace DevEvents.API.Data
             builder.Entity<DevEventsPalestrantes>(e =>
             {
                 e.HasKey(e => e.Id);
+                e.Property(dep => dep.Nome)
+                    .IsRequired()
+                    .HasColumnType("varchar(60)")
+                    .HasMaxLength(60)
+                    .IsFixedLength(false);
+
+
+
+                e.Property(dep => dep.TituloPalestra)
+                    .IsRequired()
+                    .HasColumnType("varchar(20)")
+                    .HasMaxLength(20)
+                    .IsFixedLength(false);
+
+               e.Property(dep => dep.DescricaoPalestra)
+                    .IsRequired()
+                    .HasColumnType("varchar(200)")
+                    .HasMaxLength(200)
+                    .IsFixedLength(false);
+
+                e.Property(dep => dep.LinkedinPerfil)                       
+                    .HasColumnType("varchar(200)")
+                    .HasMaxLength(200)
+                    .IsFixedLength(false);
             });
 
         }

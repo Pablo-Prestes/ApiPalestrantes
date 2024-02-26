@@ -1,6 +1,7 @@
 using DevEvents.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using DevEvents.API.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,9 @@ builder.Services.AddSwaggerGen(c =>
 //Conexão com o banco de dados
 var connectionStringMysql = builder.Configuration.GetConnectionString("DevEventsCs");
 builder.Services.AddDbContext<DevEventsDbContext>(options => options.UseMySql(connectionStringMysql, ServerVersion.Parse("8.0-mysql")));
+
+//Passando o perfil de mapeamento
+builder.Services.AddAutoMapper(typeof(DevEventProfile));
 
 //Usando em mémoria
 //builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEvents"));

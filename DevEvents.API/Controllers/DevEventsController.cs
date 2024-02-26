@@ -1,5 +1,8 @@
-﻿using DevEvents.API.Data;
+﻿using AutoMapper;
+using DevEvents.API.Data;
 using DevEvents.API.Entities;
+using DevEvents.API.Models;
+using DevEvents.API.Views;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +14,15 @@ namespace DevEvents.API.Controllers
     public class DevEventsController : ControllerBase
     {
         private readonly DevEventsDbContext _context;
+        private readonly IMapper _mapper;
 
-        public DevEventsController(DevEventsDbContext context)
+        public DevEventsController(
+            DevEventsDbContext context,
+            IMapper mapper)
+
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -27,7 +35,10 @@ namespace DevEvents.API.Controllers
         public IActionResult GetAll()
         {
             var devEvent = _context.DevEvents.Where(x => !x.Deletado).ToList();
-            return Ok(devEvent);
+
+            var viewModel = _mapper.Map<List<DevEventViewModel>>(devEvent);
+
+            return Ok(viewModel);
         }
 
         /// <summary>
@@ -49,7 +60,8 @@ namespace DevEvents.API.Controllers
             {
                 return NotFound();
             }
-            return Ok(devEvent);
+            var viewModel = _mapper.Map<DevEventViewModel>(devEvent);
+            return Ok(viewModel);
         }
 
         /// <summary>
@@ -63,8 +75,9 @@ namespace DevEvents.API.Controllers
         /// <response code="201">Sucesso</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult PostDevEvent(DevEvent devEvent)
+        public IActionResult PostDevEvent(DevEventInputModel input)
         {
+            var devEvent = _mapper.Map<DevEvent>(input);
             _context.DevEvents.Add(devEvent);
             _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new { id = devEvent.Id }, devEvent);
@@ -83,7 +96,7 @@ namespace DevEvents.API.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdateDevEvent(Guid id, DevEvent input)
+        public IActionResult UpdateDevEvent(Guid id, DevEventInputModel input)
         {
             var devEvent = _context.DevEvents.SingleOrDefault(x => x.Id == id);
             if (devEvent == null)
@@ -99,7 +112,7 @@ namespace DevEvents.API.Controllers
         /// <summary>
         /// Deletar um evento
         /// </summary>
-        /// <param name="id">Identificador de evento</param>
+        /// <param name="id">Identificador de evento</param> 
         /// <returns>Nada</returns>
         /// <response code="404">Não encontrado</response>
         /// <response code="204">Sucesso</response>
@@ -131,8 +144,9 @@ namespace DevEvents.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPost("{id}/palestrantes")]
-        public IActionResult PostPalestrante(Guid id, DevEventsPalestrantes palestrante)
+        public IActionResult PostPalestrante(Guid id, DevEventPalestranteInputModel input)
         {
+            var palestrante = _mapper.Map<DevEventsPalestrantes>(input);
 
             palestrante.DevEventsId = id;
 
