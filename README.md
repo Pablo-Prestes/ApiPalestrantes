@@ -14,4 +14,4 @@ Está sendo desenvolvido um projeto de eventos com gerenciamento de palestrantes
 - Cadastro, Listagem, Detalhes, Atualização, e Remoção de Evento
 - Cadastro de palestrantes
 
-## Status: Não finalizado
+## Status:Finalizado
