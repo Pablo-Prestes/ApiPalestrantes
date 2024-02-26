@@ -35,7 +35,6 @@ namespace DevEvents.API.Data
                     .WithOne()
                     .HasForeignKey(s => s.DevEventsId);
 
-
             });
 
             builder.Entity<DevEventsPalestrantes>(e =>
